@@ -1,22 +1,23 @@
-import {dehydrate, HydrationBoundary, QueryClient} from "@tanstack/react-query"
+import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query"
 import InfoBar from "@/components/global/inforbar/page";
 import Sidebar from "@/components/global/sidebar"
+import { InstagramSimulator } from "@/components/global/simulator"
 import { PrefetchUserAutnomations, PrefetchUserProfile } from "@/react-query/prefetch";
 
 type Props = {
-    children: React.ReactNode;
-    params: { slug: string };
-  };
-  
+  children: React.ReactNode;
+  params: { slug: string };
+};
 
-  const Layout = async ({ children, params }: Props) => {
-    const slug = await Promise.resolve(params.slug)
-     const query = new QueryClient()
-     await PrefetchUserProfile(query)
-     await PrefetchUserAutnomations(query)
-    return (
-      <HydrationBoundary state={dehydrate(query)}>
-        <div className="flex h-full">
+
+const Layout = async ({ children, params }: Props) => {
+  const slug = await Promise.resolve(params.slug)
+  const query = new QueryClient()
+  await PrefetchUserProfile(query)
+  await PrefetchUserAutnomations(query)
+  return (
+    <HydrationBoundary state={dehydrate(query)}>
+      <div className="flex h-full">
         <Sidebar slug={params.slug} />
         <div
           className="
@@ -30,13 +31,14 @@ type Props = {
     w-full
           "
         >
-        
+
           <InfoBar slug={params.slug} />
           {children}
         </div>
+        <InstagramSimulator />
       </div>
-      </HydrationBoundary>
-    );
-  };
-  
-  export default Layout;
+    </HydrationBoundary>
+  );
+};
+
+export default Layout;
