@@ -6,19 +6,20 @@ import { PrefetchUserAutnomations, PrefetchUserProfile } from "@/react-query/pre
 
 type Props = {
   children: React.ReactNode;
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 
 const Layout = async ({ children, params }: Props) => {
-  const slug = await Promise.resolve(params.slug)
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug;
   const query = new QueryClient()
   await PrefetchUserProfile(query)
   await PrefetchUserAutnomations(query)
   return (
     <HydrationBoundary state={dehydrate(query)}>
       <div className="flex h-full">
-        <Sidebar slug={params.slug} />
+        <Sidebar slug={slug} />
         <div
           className="
           lg:ml-[250px] 
@@ -32,7 +33,7 @@ const Layout = async ({ children, params }: Props) => {
           "
         >
 
-          <InfoBar slug={params.slug} />
+          <InfoBar slug={slug} />
           {children}
         </div>
         <InstagramSimulator />

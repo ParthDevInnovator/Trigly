@@ -6,13 +6,13 @@ type Props = {}
 
 const MetricsCard = (props: Props) => {
   const { data } = useQueryAutomations()
-  const comments = data?.data.reduce((current, next) => {
-    return current + next.listener?.commentCount!
-  }, 0)
+  const comments = data?.data?.reduce((current, next) => {
+    return current + (next.listener?.commentCount || 0)
+  }, 0) || 0
 
   const dms = data?.data?.reduce((current, next) => {
-    return current + next.listener?.dmCount!
-  }, 0)
+    return current + (next.listener?.dmCount || 0)
+  }, 0) || 0
 
   return (
     <div className="h-full flex lg:flex-row flex-col gap-5 items-end">
