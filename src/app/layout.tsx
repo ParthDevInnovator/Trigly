@@ -12,7 +12,7 @@ import ReduxProvider from "@/providers/redux-provider";
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Slice",
+  title: "Trigly",
   description: "Automates DMs and comments on Instagram",
 };
 
@@ -28,16 +28,16 @@ export default function RootLayout({
           suppressHydrationWarning
           className={jakarta.className}
         >
-          
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="dark"
-              disableTransitionOnChange
-            > 
+
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            disableTransitionOnChange
+          >
             <ReduxProvider><ReactQueryProvider>{children}</ReactQueryProvider></ReduxProvider>
-              <Toaster />
-            </ThemeProvider>
-        
+            <Toaster />
+          </ThemeProvider>
+
         </body>
       </html>
     </ClerkProvider>

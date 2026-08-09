@@ -13,6 +13,7 @@ import {
   getAutomations,
   updateAutomation,
 } from './queries'
+import { fetchRecentPosts } from '@/lib/instagram/provider'
 
 export const createAutomations = async (id?: string) => {
   const user = await onCurrentUser()
@@ -128,10 +129,7 @@ export const getProfilePosts = async () => {
   const user = await onCurrentUser()
   try {
     const profile = await findUser(user.id)
-    const posts = await fetch(
-      `${process.env.INSTAGRAM_BASE_URL}/me/media?fields=id,caption,media_url,media_type,timestamp&limit=10&access_token=${profile?.integrations[0].token}`
-    )
-    const parsed = await posts.json()
+    const parsed = await fetchRecentPosts(profile?.integrations[0].token!)
     if (parsed) return { status: 200, data: parsed }
     console.log('🔴 Error in getting posts')
     return { status: 404 }

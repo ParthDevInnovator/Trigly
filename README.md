@@ -61,8 +61,8 @@ OPEN_AI_KEY="your_openai_api_key"
 
 1. **Clone and Install:**
 ```bash
-git clone https://github.com/ParthDevInnovator/Slide.git
-cd Slide
+git clone https://github.com/ParthDevInnovator/Trigly.git
+cd Trigly
 npm install
 ```
 
