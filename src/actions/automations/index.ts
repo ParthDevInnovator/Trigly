@@ -12,6 +12,7 @@ import {
   findAutomation,
   getAutomations,
   updateAutomation,
+  deleteAutomationQuery,
 } from './queries'
 import { fetchRecentPosts } from '@/lib/instagram/provider'
 
@@ -169,6 +170,17 @@ export const activateAutomation = async (id: string, state: boolean) => {
         status: 200,
         data: `Automation ${state ? 'activated' : 'disabled'}`,
       }
+    return { status: 404, data: 'Automation not found' }
+  } catch (error) {
+    return { status: 500, data: 'Oops! something went wrong' }
+  }
+}
+
+export const deleteAutomation = async (id: string) => {
+  await onCurrentUser()
+  try {
+    const deleted = await deleteAutomationQuery(id)
+    if (deleted) return { status: 200, data: 'Automation deleted' }
     return { status: 404, data: 'Automation not found' }
   } catch (error) {
     return { status: 500, data: 'Oops! something went wrong' }

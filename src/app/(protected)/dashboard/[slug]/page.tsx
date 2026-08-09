@@ -4,6 +4,7 @@ import { BarDuoToneBlue } from '@/icons'
 import React from 'react'
 import Chart from './_components/metrics'
 import MetricsCard from './_components/metrics/metrics-card'
+import MetricsHeader from './_components/metrics/metrics-header'
 
 type Props = {}
 
@@ -26,9 +27,7 @@ const Page = (props: Props) => {
             <h2 className="text-2xl font-medium text-white">
               Automated Activity
             </h2>
-            <p className="text-text-secondary text-sm">
-              Automated 0 out of 1 interactions
-            </p>
+            <MetricsHeader />
           </div>
         </span>
         <div className="w-full flex lg:flex-row flex-col gap-5">

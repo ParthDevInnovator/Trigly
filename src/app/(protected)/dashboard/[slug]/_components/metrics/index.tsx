@@ -16,23 +16,31 @@ import {
 
 type Props = {}
 
-const chartData = [
-  { month: 'January', desktop: 86 },
-  { month: 'February', desktop: 50 },
-  { month: 'March', desktop: 37 },
-  { month: 'April', desktop: 73 },
-  { month: 'May', desktop: 29 },
-  { month: 'June', desktop: 14 },
-]
+import { useQueryAutomations } from '@/hooks/user-queries'
 
 const chartConfig = {
   desktop: {
-    label: 'Desktop',
+    label: 'desktop',
     color: 'hsl(var(--chart-1))',
   },
 }
 
 const Chart = (props: Props) => {
+  const { data } = useQueryAutomations()
+
+  // Generate dynamic chart data based on automation creation items or interactions (we will just plot something based on their automations)
+  const chartData = [
+    { month: 'January', desktop: 0 },
+    { month: 'February', desktop: 0 },
+    { month: 'March', desktop: 0 },
+    { month: 'April', desktop: 0 },
+    { month: 'May', desktop: 0 },
+    { month: 'June', desktop: 0 },
+  ]
+
+  if (data?.data) {
+    chartData[5].desktop = data.data.reduce((acc, curr) => acc + (curr.listener?.dmCount || 0) + (curr.listener?.commentCount || 0), 0)
+  }
   return (
     <Card className="border-none p-0">
       <CardContent className="p-0">
