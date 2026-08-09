@@ -9,6 +9,13 @@ export async function GET() {
 
   const priceId = process.env.STRIPE_SUBSCRIPTION_PRICE_ID
 
+  if (process.env.DEMO_MODE === 'true') {
+    return NextResponse.json({
+      status: 200,
+      session_url: `${process.env.NEXT_PUBLIC_HOST_URL}/payment?session_id=demo_session_${user.id}`,
+    })
+  }
+
   const session = await stripe.checkout.sessions.create({
     mode: 'subscription',
     line_items: [

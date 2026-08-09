@@ -8,7 +8,7 @@ import {
     trackResponses,
 } from '@/actions/webhook/queries'
 import { sendDirectMessage, sendCommentReply } from '@/lib/instagram/provider'
-import { openai } from '@/lib/openai'
+import { generateSmartReply } from '@/lib/ai/provider'
 import { client } from '@/lib/prisma'
 import { InstagramWebhookPayload } from '@/types/instagram'
 
@@ -64,17 +64,15 @@ export async function handleIncomingEvent(
                         automation.listener.listener === 'SMARTAI' &&
                         automation.User?.subscription?.plan === 'PRO'
                     ) {
-                        const smart_ai_message = await openai.chat.completions.create({
-                            model: 'gpt-4o',
-                            messages: [
-                                {
-                                    role: 'assistant',
-                                    content: `${automation.listener?.prompt}: Keep responses under 2 sentences`,
-                                },
-                            ],
-                        })
+                        const smart_ai_message = await generateSmartReply(
+                            automation.listener?.prompt || '',
+                            [{
+                                role: 'user',
+                                content: webhook_payload.entry[0].messaging[0].message.text
+                            }]
+                        )
 
-                        if (smart_ai_message.choices[0].message.content) {
+                        if (smart_ai_message) {
                             const reciever = createChatHistory(
                                 automation.id,
                                 webhook_payload.entry[0].id,
@@ -86,7 +84,7 @@ export async function handleIncomingEvent(
                                 automation.id,
                                 webhook_payload.entry[0].id,
                                 webhook_payload.entry[0].messaging[0].sender.id,
-                                smart_ai_message.choices[0].message.content
+                                smart_ai_message
                             )
 
                             await client.$transaction([reciever, sender])
@@ -94,7 +92,7 @@ export async function handleIncomingEvent(
                             const direct_message = await sendDirectMessage(
                                 webhook_payload.entry[0].id,
                                 webhook_payload.entry[0].messaging[0].sender.id,
-                                smart_ai_message.choices[0].message.content,
+                                smart_ai_message,
                                 automation.User?.integrations[0].token!
                             )
 
@@ -164,16 +162,14 @@ export async function handleIncomingEvent(
                             automation.listener.listener === 'SMARTAI' &&
                             automation.User?.subscription?.plan === 'PRO'
                         ) {
-                            const smart_ai_message = await openai.chat.completions.create({
-                                model: 'gpt-4o',
-                                messages: [
-                                    {
-                                        role: 'assistant',
-                                        content: `${automation.listener?.prompt}: keep responses under 2 sentences`,
-                                    },
-                                ],
-                            })
-                            if (smart_ai_message.choices[0].message.content) {
+                            const smart_ai_message = await generateSmartReply(
+                                automation.listener?.prompt || '',
+                                [{
+                                    role: 'user',
+                                    content: webhook_payload.entry[0].changes[0].value.text
+                                }]
+                            )
+                            if (smart_ai_message) {
                                 const reciever = createChatHistory(
                                     automation.id,
                                     webhook_payload.entry[0].id,
@@ -185,7 +181,7 @@ export async function handleIncomingEvent(
                                     automation.id,
                                     webhook_payload.entry[0].id,
                                     webhook_payload.entry[0].changes[0].value.from.id,
-                                    smart_ai_message.choices[0].message.content
+                                    smart_ai_message
                                 )
 
                                 await client.$transaction([reciever, sender])
@@ -224,22 +220,21 @@ export async function handleIncomingEvent(
                     automation?.User?.subscription?.plan === 'PRO' &&
                     automation.listener?.listener === 'SMARTAI'
                 ) {
-                    const smart_ai_message = await openai.chat.completions.create({
-                        model: 'gpt-4o',
-                        messages: [
-                            {
-                                role: 'assistant',
-                                content: `${automation.listener?.prompt}: keep responses under 2 sentences`,
-                            },
-                            ...customer_history.history,
-                            {
-                                role: 'user',
-                                content: webhook_payload.entry[0].messaging![0].message.text,
-                            },
-                        ],
-                    })
+                    const formattedHistory = customer_history.history.map(msg => ({
+                        role: msg.role as 'assistant' | 'user',
+                        content: msg.content
+                    }));
+                    formattedHistory.push({
+                        role: 'user',
+                        content: webhook_payload.entry[0].messaging![0].message.text,
+                    });
 
-                    if (smart_ai_message.choices[0].message.content) {
+                    const smart_ai_message = await generateSmartReply(
+                        automation.listener?.prompt || '',
+                        formattedHistory
+                    )
+
+                    if (smart_ai_message) {
                         const reciever = createChatHistory(
                             automation.id,
                             webhook_payload.entry[0].id,
@@ -251,13 +246,13 @@ export async function handleIncomingEvent(
                             automation.id,
                             webhook_payload.entry[0].id,
                             webhook_payload.entry[0].messaging![0].sender.id,
-                            smart_ai_message.choices[0].message.content
+                            smart_ai_message
                         )
                         await client.$transaction([reciever, sender])
                         const direct_message = await sendDirectMessage(
                             webhook_payload.entry[0].id,
                             webhook_payload.entry[0].messaging![0].sender.id,
-                            smart_ai_message.choices[0].message.content,
+                            smart_ai_message,
                             automation.User?.integrations[0].token!
                         )
 
