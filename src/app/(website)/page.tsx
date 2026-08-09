@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { CheckCircle, MenuIcon } from 'lucide-react'
+import { CheckCircle, MenuIcon, Sparkles } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -46,11 +46,11 @@ export default function Home() {
           <div className="container px-4 py-8">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-lg bg-white flex items-center justify-center font-bold">
-                  li
+                <div className="h-8 w-8 rounded-lg bg-white flex items-center justify-center">
+                  <Sparkles className="h-5 w-5 text-black" />
                 </div>
-                <span className="text-xl font-semibold text-primary-foreground">
-                  Slide
+                <span className="text-xl font-semibold text-white">
+                  Trigly
                 </span>
               </div>
               <nav className="hidden space-x-6 text-sm text-blue-200 md:block">
@@ -58,18 +58,18 @@ export default function Home() {
                 <Link href="#pricing">Pricing</Link>
                 <Link href="#about">About</Link>
               </nav>
-              <Button className="bg-white text-primary">
+              <Button className="bg-white text-black hover:bg-white/90 font-bold">
                 <Link href="/dashboard">Login</Link>
               </Button>
             </div>
 
             <div className="mx-auto mt-16 max-w-3xl text-center">
               <h1 className="text-4xl font-bold leading-tight tracking-tighter text-white sm:text-5xl md:text-6xl lg:text-7xl">
-                Transform Your Instagram Engagement with Slide
+                Transform Your Instagram Engagement with Trigly
               </h1>
 
               <p className="mt-6 text-lg text-blue-200">
-                Slide revolutionizes how you connect with your audience on
+                Trigly revolutionizes how you connect with your audience on
                 Instagram. Automate responses and boost engagement effortlessly,
                 turning interactions into valuable business opportunities.
               </p>
@@ -90,14 +90,15 @@ export default function Home() {
                 </Button>
               </div>
             </div>
-            <div className="relative h-40 md:h-80 w-full  mt-10">
-              <Image
-                src="/Ig-creators.png"
-                alt="Community member"
-                fill
-                className="object-cover"
-              />
-            </div>
+            {/* <div className="relative h-64 md:h-96 w-full mt-10 rounded-xl overflow-hidden border border-white/20 shadow-2xl flex items-center justify-center bg-gradient-to-r from-blue-900 via-indigo-900 to-purple-900">
+              <div className="text-center space-y-4">
+                <div className="mx-auto w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mb-4 backdrop-blur-md">
+                  <Sparkles className="w-8 h-8 text-blue-200" />
+                </div>
+                <h3 className="text-2xl font-bold text-white tracking-widest uppercase">Dashboard Preview</h3>
+                <p className="text-blue-200/80">Connect your Instagram account to unlock audience insights.</p>
+              </div>
+            </div> */}
           </div>
         </div>
       </section>
@@ -115,10 +116,18 @@ export default function Home() {
             {plans.map((plan, index) => (
               <Card
                 key={index}
-                className="flex flex-col justify-between"
+                className={`flex flex-col justify-between relative overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 ${index === 1
+                  ? 'border-blue-500 shadow-blue-900/20 shadow-xl bg-gradient-to-b from-slate-900 to-slate-900/50'
+                  : 'bg-card/50 backdrop-blur-sm'
+                  }`}
               >
+                {index === 1 && (
+                  <div className="absolute top-0 right-0 rounded-bl-xl bg-blue-500 px-3 py-1 text-xs font-medium text-white">
+                    Most Popular
+                  </div>
+                )}
                 <CardHeader>
-                  <CardTitle>{plan.name}</CardTitle>
+                  <CardTitle className={index === 1 ? 'text-blue-400' : ''}>{plan.name}</CardTitle>
                   <CardDescription>{plan.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="grid gap-4">
@@ -128,13 +137,13 @@ export default function Home() {
                       /month
                     </span>
                   </div>
-                  <ul className="space-y-2">
+                  <ul className="space-y-2 relative z-10">
                     {plan.features.map((feature, i) => (
                       <li
                         key={i}
                         className="flex items-center"
                       >
-                        <CheckCircle className="mr-2 h-4 w-4 text-primary" />
+                        <CheckCircle className={`mr-2 h-4 w-4 ${index === 1 ? 'text-blue-500' : 'text-primary'}`} />
                         <span className="text-sm text-muted-foreground">
                           {feature}
                         </span>
@@ -143,7 +152,9 @@ export default function Home() {
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full">{plan.cta}</Button>
+                  <Button className={`w-full ${index === 1 ? 'bg-blue-600 hover:bg-blue-700 text-white' : ''}`}>
+                    {plan.cta}
+                  </Button>
                 </CardFooter>
               </Card>
             ))}
