@@ -126,7 +126,7 @@
   background-image: radial-gradient(
     ellipse farthest-side,
     rgba(51, 82, 204, 0.15) 20%,
-    #09090b 100%
+    transparent 100%
   );
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -146,7 +146,7 @@
   background-image: radial-gradient(
     at top left,
     rgba(51, 82, 204, 0.05) 40%,
-    #1d1d1d 60%
+    transparent 60%
   );
   background-size: 40% 100%;
   background-repeat: no-repeat;

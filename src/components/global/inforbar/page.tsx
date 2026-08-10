@@ -18,6 +18,7 @@ import MainBreadCrumb from '../bread-crumbs/main-bread-crumb'
 import { SubscriptionPlan } from '../subscription-plane'
 import Sheet from '../sheet/page'
 import { PAGE_BREAD_CRUMBS } from '@/constants/pages'
+import { ModeToggle } from '../mode-toggle'
 
 type Props = {
   slug: string
@@ -73,6 +74,7 @@ const InfoBar = ({ slug }: Props) => {
           </span>
           <Search />
           <CreateAutomation />
+          <ModeToggle />
           <Notifications />
         </div>
         <MainBreadCrumb

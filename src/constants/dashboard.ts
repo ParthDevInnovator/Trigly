@@ -22,8 +22,8 @@ export const DASHBOARD_CARDS: Props[] = [
   },
   {
     id: v4(),
-    label: 'Answer Questions with AI',
-    subLabel: 'Identify and respond to queries with AI',
-    description: 'The intention of the message will be automatically detected',
+    label: 'Capture Leads Automatically',
+    subLabel: 'Turn followers into customers instantly',
+    description: 'Automate DM sequences to collect emails and drive sales 24/7',
   },
 ]

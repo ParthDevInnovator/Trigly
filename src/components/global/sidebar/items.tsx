@@ -22,11 +22,11 @@ const Items = ({ page, slug }: Props) => {
       href={`/dashboard/${slug}${item.label === 'home' ? '' : `/${item.label}`}`}
       onClick={() => setClickedItem(item.id)}
       className={cn(
-        'capitalize flex gap-x-2 rounded-full p-3 hover:bg-[#0f0f0f] transition-colors',
-        page === item.label && 'bg-[#0f0f0f]',
+        'capitalize flex gap-x-2 rounded-full p-3 hover:bg-secondary hover:text-secondary-foreground transition-colors',
+        page === item.label && 'bg-secondary text-secondary-foreground',
         page === slug && item.label === 'home'
-          ? 'bg-[#0f0f0f]'
-          : 'text-[#9B9CA0]'
+          ? 'bg-secondary text-secondary-foreground'
+          : 'text-muted-foreground'
       )}
     >
       {clickedItem === item.id ? (

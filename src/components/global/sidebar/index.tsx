@@ -25,9 +25,10 @@ const Sidebar = ({ slug }: Props) => {
     fixed 
     left-0 
     lg:inline-block
-    border-[#545454] 
+    border-border 
     bg-gradient-to-b from-[#768BDD] 
-    via-[#171717]
+    dark:via-[#171717]
+    via-white
      to-[#768BDD] 
      hidden 
      bottom-0 
@@ -42,7 +43,7 @@ const Sidebar = ({ slug }: Props) => {
        w-full 
        h-full 
        p-3 
-       bg-[#0e0e0e] 
+       bg-background 
        bg-opacity-90 
        bg-clip-padding 
        backdrop-filter 
@@ -61,17 +62,17 @@ const Sidebar = ({ slug }: Props) => {
         <div className="px-16">
           <Separator
             orientation="horizontal"
-            className="bg-[#333336]"
+            className="bg-border"
           />
         </div>
         <div className="px-3 flex flex-col gap-y-5">
           <div className="flex gap-x-2">
             <ClerkAuthState />
-            <p className="text-[#9B9CA0]">Profile</p>
+            <p className="text-muted-foreground">Profile</p>
           </div>
           <div className="flex gap-x-3">
             <HelpDuoToneWhite />
-            <p className="text-[#9B9CA0]">Help</p>
+            <p className="text-muted-foreground">Help</p>
           </div>
         </div>
         <SubscriptionPlan type="FREE">
