@@ -10,10 +10,7 @@ import { v4 } from 'uuid'
 type Props = {}
 
 const CreateAutomation = (props: Props) => {
-  const mutationId = useMemo(() => v4(), [])
-
-  console.log(mutationId)
-  const { isPending, mutate } = useCreateAutomation(mutationId)
+  const { isPending, mutate } = useCreateAutomation()
 
   return (
     <Button
@@ -21,7 +18,7 @@ const CreateAutomation = (props: Props) => {
       onClick={() =>
         mutate({
           name: 'Untitled',
-          id: mutationId,
+          id: v4(),
           createdAt: new Date(),
           keywords: [],
         })

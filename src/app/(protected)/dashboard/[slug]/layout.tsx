@@ -14,8 +14,10 @@ const Layout = async ({ children, params }: Props) => {
   const resolvedParams = await params;
   const slug = resolvedParams.slug;
   const query = new QueryClient()
-  await PrefetchUserProfile(query)
-  await PrefetchUserAutnomations(query)
+  await Promise.all([
+    PrefetchUserProfile(query),
+    PrefetchUserAutnomations(query)
+  ])
   return (
     <HydrationBoundary state={dehydrate(query)}>
       <div className="flex h-full">
