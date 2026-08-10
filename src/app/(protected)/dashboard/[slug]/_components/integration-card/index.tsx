@@ -12,9 +12,13 @@ type Props = {
   strategy: 'INSTAGRAM' | 'CRM'
 }
 
-const IntegrationCard = ({ description, icon, strategy, title }: Props) => {
+import { useTransition } from 'react'
+import Loader from '@/components/global/loader'
 
-  const onInstaOAuth = () => onOAuthInstagram(strategy)
+const IntegrationCard = ({ description, icon, strategy, title }: Props) => {
+  const [isPending, startTransition] = useTransition();
+
+  const onInstaOAuth = () => startTransition(() => onOAuthInstagram(strategy))
 
   const { data } = useQuery({
     queryKey: ['user-profile'],
@@ -34,10 +38,12 @@ const IntegrationCard = ({ description, icon, strategy, title }: Props) => {
       </div>
       <Button
         onClick={onInstaOAuth}
-        disabled={integrated?.name === strategy}
+        disabled={integrated?.name === strategy || isPending}
         className="bg-gradient-to-br text-white rounded-full text-lg from-[#3352CC] font-medium to-[#1C2D70] hover:opacity-70 transition duration-100"
       >
-        {integrated ? 'Connected' : 'Connect'}
+        <Loader state={isPending}>
+          {integrated ? 'Connected' : 'Connect'}
+        </Loader>
       </Button>
     </div>
   )

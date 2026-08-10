@@ -22,7 +22,10 @@ export const ActionMenu = ({ id }: { id: string }) => {
     const { mutate, isPending } = useMutationData(
         ['delete-automation'],
         (data: { id: string }) => deleteAutomation(data.id),
-        'user-automations'
+        'user-automations',
+        () => {
+            import('sweetalert2').then((module) => module.default.close())
+        }
     )
 
     return (
@@ -64,6 +67,15 @@ export const ActionMenu = ({ id }: { id: string }) => {
                                 color: '#ffffff'
                             }).then((result) => {
                                 if (result.isConfirmed) {
+                                    Swal.fire({
+                                        title: 'Deleting...',
+                                        background: '#1D1D1D',
+                                        color: '#ffffff',
+                                        showConfirmButton: false,
+                                        didOpen: () => {
+                                            Swal.showLoading()
+                                        }
+                                    })
                                     mutate({ id })
                                 }
                             })
