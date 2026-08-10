@@ -13,7 +13,7 @@ export async function getSimulatedChat(senderId: string) {
         orderBy: { createdAt: 'asc' },
     })
 
-    return history.map((chat, idx) => ({
+    return history.map((chat: any, idx: number) => ({
         id: chat.id,
         message: chat.message,
         isBot: idx % 2 !== 0
