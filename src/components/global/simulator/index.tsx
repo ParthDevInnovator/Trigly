@@ -102,8 +102,8 @@ export const InstagramSimulator = () => {
                 {chatHistory?.map((chat) => (
                     <div key={chat.id} className={`flex max-w-[85%] ${chat.isBot ? 'self-start' : 'self-end'}`}>
                         <div className={`p-3 rounded-2xl text-sm ${chat.isBot
-                                ? 'bg-white border text-foreground rounded-tl-none shadow-sm'
-                                : 'bg-blue-600 text-white rounded-tr-none shadow-sm'
+                            ? 'bg-white border text-foreground rounded-tl-none shadow-sm'
+                            : 'bg-blue-600 text-white rounded-tr-none shadow-sm'
                             }`}>
                             {chat.message}
                         </div>
@@ -130,7 +130,7 @@ export const InstagramSimulator = () => {
                         className="flex-1 bg-muted/50 border-none focus-visible:ring-1 focus-visible:ring-blue-500"
                     />
                     <Button type="submit" disabled={isPending || !keyword.trim()} className="bg-blue-600 hover:bg-blue-700 shrink-0 h-10 w-10 p-0 rounded-full">
-                        <Send className="w-4 h-4 text-white" />
+                        {isPending ? <Bot className="w-4 h-4 text-white animate-spin" /> : <Send className="w-4 h-4 text-white" />}
                     </Button>
                 </form>
             </div>
