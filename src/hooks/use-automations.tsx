@@ -17,10 +17,10 @@ import { useDispatch } from 'react-redux'
 import { TRIGGER } from '@/redux/slices/automation'
 import { useMutationData } from './use-mutation-data'
 
-export const useCreateAutomation = (id?: string) => {
+export const useCreateAutomation = () => {
   const { isPending, mutate } = useMutationData(
     ['create-automation'],
-    () => createAutomations(id),
+    (data: { id: string, name: string, createdAt: Date, keywords: any[] }) => createAutomations(data.id),
     'user-automations'
   )
 
