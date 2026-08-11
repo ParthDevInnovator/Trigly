@@ -3,7 +3,6 @@ import { useQueryAutomation } from '@/hooks/user-queries'
 import React from 'react'
 import ActiveTrigger from './active'
 import { Separator } from '@/components/ui/separator'
-ThenAction
 import TriggerButton from '../trigger-button'
 import { AUTOMATION_TRIGGERS } from '@/constants/automation'
 import { useTriggers } from '@/hooks/use-automations'

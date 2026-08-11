@@ -99,7 +99,7 @@ export const InstagramSimulator = () => {
                     </div>
                 )}
 
-                {chatHistory?.map((chat) => (
+                {chatHistory?.map((chat: any) => (
                     <div key={chat.id} className={`flex max-w-[85%] ${chat.isBot ? 'self-start' : 'self-end'}`}>
                         <div className={`p-3 rounded-2xl text-sm ${chat.isBot
                             ? 'bg-white border text-foreground rounded-tl-none shadow-sm'

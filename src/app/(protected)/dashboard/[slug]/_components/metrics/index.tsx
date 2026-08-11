@@ -39,7 +39,7 @@ const Chart = (props: Props) => {
   ]
 
   if (data?.data) {
-    chartData[5].desktop = data.data.reduce((acc, curr) => acc + (curr.listener?.dmCount || 0) + (curr.listener?.commentCount || 0), 0)
+    chartData[5].desktop = data.data.reduce((acc: number, curr: any) => acc + (curr.listener?.dmCount || 0) + (curr.listener?.commentCount || 0), 0)
   }
   return (
     <Card className="border-none p-0">
