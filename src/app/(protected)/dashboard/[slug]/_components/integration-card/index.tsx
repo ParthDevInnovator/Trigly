@@ -26,7 +26,7 @@ const IntegrationCard = ({ description, icon, strategy, title }: Props) => {
   })
 
   const integrated = data?.data?.integrations.find(
-    (integration) => integration.name === strategy
+    (integration: any) => integration.name === strategy
   )
 
   return (
