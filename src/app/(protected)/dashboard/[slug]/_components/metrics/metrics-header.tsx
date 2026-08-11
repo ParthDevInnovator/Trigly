@@ -5,7 +5,7 @@ import { useQueryAutomations } from '@/hooks/user-queries'
 const MetricsHeader = () => {
     const { data } = useQueryAutomations()
     const
-        interactions = (data?.data || []).reduce((current, next) => {
+        interactions = (data?.data || []).reduce((current: number, next: any) => {
             return current + (next.listener?.commentCount || 0) + (next.listener?.dmCount || 0)
         }, 0)
 
