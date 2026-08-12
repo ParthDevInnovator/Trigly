@@ -10,7 +10,7 @@ import {
 import { CheckCircle, MenuIcon, Sparkles } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { SignInButton, SignUpButton } from '@clerk/nextjs'
+import { LoginButton, GetStartedButton } from '@/components/global/landing-auth-buttons'
 
 export default function Home() {
   const plans = [
@@ -59,9 +59,7 @@ export default function Home() {
                 <Link href="#pricing">Pricing</Link>
                 <Link href="#about">About</Link>
               </nav>
-              <SignInButton mode="modal">
-                <Button className="bg-white text-black hover:bg-white/90 font-bold">Login</Button>
-              </SignInButton>
+              <LoginButton />
             </div>
 
             <div className="mx-auto mt-16 max-w-3xl text-center">
@@ -76,11 +74,7 @@ export default function Home() {
               </p>
 
               <div className="mt-8 flex justify-center gap-4">
-                <SignUpButton mode="modal">
-                  <Button size="lg" className="bg-blue-600 text-white hover:bg-blue-700">
-                    Get Started
-                  </Button>
-                </SignUpButton>
+                <GetStartedButton />
                 <Button
                   size="lg"
                   variant="outline"
@@ -152,11 +146,7 @@ export default function Home() {
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <SignUpButton mode="modal">
-                    <Button className={`w-full ${index === 1 ? 'bg-blue-600 hover:bg-blue-700 text-white' : ''}`}>
-                      {plan.cta}
-                    </Button>
-                  </SignUpButton>
+                  <GetStartedButton size="default" className={`w-full ${index === 1 ? 'bg-blue-600 hover:bg-blue-700 text-white' : ''}`} />
                 </CardFooter>
               </Card>
             ))}
