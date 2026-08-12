@@ -1,3 +1,4 @@
+'use client'
 import { Button } from '@/components/ui/button'
 import { PLANS } from '@/constants/pages'
 import { cn } from '@/lib/utils'
