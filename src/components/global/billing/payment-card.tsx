@@ -3,6 +3,8 @@ import { PLANS } from '@/constants/pages'
 import { cn } from '@/lib/utils'
 import { CircleCheck } from 'lucide-react'
 import React from 'react'
+import { useSubscription } from '@/hooks/use-subscription'
+import Loader from '@/components/global/loader'
 
 type Props = {
   label: string
@@ -11,6 +13,8 @@ type Props = {
 }
 
 const PaymentCard = ({ current, label, landing }: Props) => {
+  const { onSubscribe, isProcessing } = useSubscription()
+
   return (
     <div
       className={cn(
@@ -36,8 +40,8 @@ const PaymentCard = ({ current, label, landing }: Props) => {
             {label === current
               ? 'Your Current Plan'
               : current === 'PRO'
-              ? 'Downgrade'
-              : 'Upgrade'}
+                ? 'Downgrade'
+                : 'Upgrade'}
           </h2>
         )}
         <p className="text-text-secondary text-sm mb-2">
@@ -80,19 +84,20 @@ const PaymentCard = ({ current, label, landing }: Props) => {
             {label === current
               ? 'Get Started'
               : current === 'PRO'
-              ? 'Free'
-              : 'Get Started'}
+                ? 'Free'
+                : 'Get Started'}
           </Button>
         ) : (
           <Button
+            onClick={onSubscribe}
             className="rounded-full mt-5 bg-background-80 text-white hover:text-background-80"
-            disabled={label === current}
+            disabled={label === current || isProcessing}
           >
             {label === current
               ? 'Active'
               : current === 'PRO'
-              ? 'Downgrade'
-              : 'Upgrade'}
+                ? 'Downgrade'
+                : <Loader state={isProcessing}>Upgrade</Loader>}
           </Button>
         )}
       </div>
