@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Send, Bot, User, MessageCircle } from 'lucide-react'
-import { getSimulatedChat } from '@/actions/simulator'
+import { getSimulatedChat, sendSimulatedMessage } from '@/actions/simulator'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 export const InstagramSimulator = () => {
@@ -11,7 +11,6 @@ export const InstagramSimulator = () => {
     const [keyword, setKeyword] = useState('')
     const scrollRef = useRef<HTMLDivElement>(null)
     const SENDER_ID = 'simulated_customer_123'
-    const BOT_IG_ID = 'simulated_bot_999'
 
     // Fetch local mock chat history
     const { data: chatHistory, refetch, isFetching } = useQuery({
@@ -26,37 +25,17 @@ export const InstagramSimulator = () => {
         }
     }, [chatHistory])
 
-    // Mutation to fire fake webhook
+    // Mutation to send message via server action
     const { mutate: fireWebhook, isPending } = useMutation({
         mutationFn: async (text: string) => {
-            const payload = {
-                object: "instagram",
-                entry: [{
-                    id: BOT_IG_ID,
-                    time: new Date().getTime(),
-                    messaging: [{
-                        sender: { id: SENDER_ID },
-                        recipient: { id: BOT_IG_ID },
-                        timestamp: new Date().getTime(),
-                        message: { text }
-                    }]
-                }]
-            }
-
-            const res = await fetch('/api/webhook/instagram', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            })
-
-            if (!res.ok) throw new Error("Webhook failed")
-            return res.json()
+            return sendSimulatedMessage(text)
         },
         onSuccess: () => {
             setKeyword('')
             refetch()
         }
     })
+
 
     // Start chat with simulated webhook
     const handleSend = () => {

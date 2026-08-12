@@ -106,7 +106,9 @@ const AutomationList = (props: Props) => {
                   Standard
                 </Button>
               )}
-              <ActionMenu id={automation.id} />
+              <div onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
+                <ActionMenu id={automation.id} />
+              </div>
             </div>
           </div>
         </Link>
