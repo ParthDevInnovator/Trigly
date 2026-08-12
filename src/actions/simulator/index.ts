@@ -1,6 +1,14 @@
 "use server"
 
 import { client } from '@/lib/prisma'
+import { generateSmartReply } from '@/lib/ai/provider'
+
+const SENDER_ID = 'simulated_customer_123'
+const BOT_ID = 'simulated_bot_999'
+
+const SIMULATOR_PROMPT = `You are Trigly, an AI-powered Instagram automation assistant. 
+You help businesses automate their Instagram DM responses. 
+Reply in a friendly, helpful, and concise manner. Keep responses under 2 sentences.`
 
 export async function getSimulatedChat(senderId: string) {
     const history = await client.dms.findMany({
@@ -16,11 +24,41 @@ export async function getSimulatedChat(senderId: string) {
     return history.map((chat: any, idx: number) => ({
         id: chat.id,
         message: chat.message,
-        isBot: idx % 2 !== 0
+        isBot: chat.senderId === BOT_ID
     }))
 }
 
-// Ensure the db records map correctly. In `createChatHistory`:
-// receiver mapping:
-// When bot sends: sender = bot_id (automation.id), reciever = customer_id. So reciever is NOT null.
-// When customer sends: sender = customer_id, reciever = bot_id. Oh wait, `createChatHistory` arguments are: `automationId, sender, reciever, message`.
+export async function sendSimulatedMessage(text: string) {
+    try {
+        // Save user message to DB
+        await client.dms.create({
+            data: {
+                senderId: SENDER_ID,
+                reciever: BOT_ID,
+                message: text,
+            }
+        })
+
+        // Generate AI reply via Gemini
+        const aiReply = await generateSmartReply(
+            SIMULATOR_PROMPT,
+            [{ role: 'user', content: text }]
+        )
+
+        console.log('[Simulator] AI Reply:', aiReply)
+
+        // Save bot reply to DB
+        await client.dms.create({
+            data: {
+                senderId: BOT_ID,
+                reciever: SENDER_ID,
+                message: aiReply,
+            }
+        })
+
+        return { success: true }
+    } catch (error) {
+        console.error('[Simulator] Error:', error)
+        return { success: false, error: String(error) }
+    }
+}

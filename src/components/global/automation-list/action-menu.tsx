@@ -43,6 +43,7 @@ export const ActionMenu = ({ id }: { id: string }) => {
                     className="cursor-pointer hover:bg-gray-800 flex gap-2 items-center"
                     onSelect={(e) => {
                         e.preventDefault()
+                        e.stopPropagation()
                         router.push(`${pathname}/${id}`)
                     }}
                 >
@@ -52,6 +53,7 @@ export const ActionMenu = ({ id }: { id: string }) => {
                     className="cursor-pointer hover:bg-red-500/10 text-red-500 flex gap-2 items-center"
                     onSelect={(e) => {
                         e.preventDefault()
+                        e.stopPropagation()
                         import('sweetalert2').then((module) => {
                             const Swal = module.default
                             document.body.click() // close the dropdown manually
