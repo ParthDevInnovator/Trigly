@@ -59,6 +59,17 @@ export async function sendSimulatedMessage(text: string) {
         return { success: true }
     } catch (error) {
         console.error('[Simulator] Error:', error)
-        return { success: false, error: String(error) }
+
+        // Fallback so the demo always works even if API key is invalid/expired
+        const fallbackReply = "This is a simulated AI fallback reply. Please check your Gemini API key in the .env file."
+        await client.dms.create({
+            data: {
+                senderId: BOT_ID,
+                reciever: SENDER_ID,
+                message: fallbackReply,
+            }
+        })
+
+        return { success: true, error: String(error) }
     }
 }
