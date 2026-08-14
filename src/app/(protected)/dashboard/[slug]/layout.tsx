@@ -25,13 +25,13 @@ const Layout = async ({ children, params }: Props) => {
         <div
           className="
           lg:ml-[250px] 
-    lg:pl-10 
+    lg:px-10 
     lg:py-5 
     flex 
     flex-col 
     overflow-auto
     h-[calc(100vh-4rem)]
-    w-full
+    flex-1
           "
         >
 

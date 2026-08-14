@@ -99,10 +99,10 @@ export const saveTrigger = async (automationId: string, trigger: string[]) => {
   }
 }
 
-export const saveKeyword = async (automationId: string, keyword: string) => {
+export const saveKeyword = async (automationId: string, keyword: string, reply?: string) => {
   await onCurrentUser()
   try {
-    const create = await addKeyWord(automationId, keyword)
+    const create = await addKeyWord(automationId, keyword, reply)
 
     if (create) return { status: 200, data: 'Keyword added successfully' }
 
