@@ -81,20 +81,17 @@ export const InstagramSimulator = () => {
                 {chatHistory?.map((chat: any) => (
                     <div key={chat.id} className={`flex max-w-[85%] ${chat.isBot ? 'self-start' : 'self-end'}`}>
                         <div className={`p-3 rounded-2xl text-sm ${chat.isBot
-                            ? 'bg-white border text-foreground rounded-tl-none shadow-sm'
-                            : 'bg-blue-600 text-white rounded-tr-none shadow-sm'
+                            ? 'bg-muted border text-foreground rounded-bl-none shadow-sm'
+                            : 'bg-blue-600 text-white rounded-br-none shadow-sm'
                             }`}>
                             {chat.message}
                         </div>
                     </div>
                 ))}
                 {isPending && (
-                    <div className="self-end bg-blue-600/50 text-white p-3 rounded-2xl rounded-tr-none text-sm animate-pulse">
+                    <div className="self-end bg-blue-600/50 text-white p-3 rounded-2xl rounded-br-none text-sm animate-pulse">
                         ...
                     </div>
-                )}
-                {(isFetching && !isPending) && (
-                    <div className="self-start text-xs text-muted-foreground animate-pulse ml-2">Bot is typing...</div>
                 )}
             </div>
 

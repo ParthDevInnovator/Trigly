@@ -1,9 +1,10 @@
 import { Input } from '@/components/ui/input'
 import { useKeywords } from '@/hooks/use-automations'
-import { useMutationDataState } from '@/hooks/use-mutation-data'
+import { useMutationDataState, useMutationData } from '@/hooks/use-mutation-data'
 import { useQueryAutomation } from '@/hooks/user-queries'
 import { X } from 'lucide-react'
 import React from 'react'
+import { saveKeyword } from '@/actions/automations'
 
 type Props = {
   id: string
@@ -11,6 +12,12 @@ type Props = {
 
 export const Keywords = ({ id }: Props) => {
   const { onValueChange, keyword, onKeyPress, deleteMutation } = useKeywords(id)
+  const { mutate } = useMutationData(
+    ['add-keyword'],
+    (data: { keyword: string }) => saveKeyword(id, data.keyword),
+    'automation-info',
+    () => { } // keyword state is reset inside useKeywords but we need a local mutate access or we can just export mutate from useKeywords.
+  )
   const { latestVariable } = useMutationDataState(['add-keyword'])
   const { data } = useQueryAutomation(id)
 
@@ -47,6 +54,13 @@ export const Keywords = ({ id }: Props) => {
           className="p-0 bg-transparent ring-0 border-none outline-none"
           onChange={onValueChange}
           onKeyUp={onKeyPress}
+          onBlur={() => {
+            if (keyword.trim()) {
+              mutate({ keyword })
+              // Clear keyword since the mutation is triggered
+              onValueChange({ target: { value: '' } } as any)
+            }
+          }}
         />
       </div>
     </div>
