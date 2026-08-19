@@ -99,10 +99,10 @@ export const saveTrigger = async (automationId: string, trigger: string[]) => {
   }
 }
 
-export const saveKeyword = async (automationId: string, keyword: string) => {
+export const saveKeyword = async (automationId: string, keyword: string, reply?: string) => {
   await onCurrentUser()
   try {
-    const create = await addKeyWord(automationId, keyword)
+    const create = await addKeyWord(automationId, keyword, reply)
 
     if (create) return { status: 200, data: 'Keyword added successfully' }
 
@@ -131,7 +131,8 @@ export const getProfilePosts = async () => {
   const user = await onCurrentUser()
   try {
     const profile = await findUser(user.id)
-    const parsed = await fetchRecentPosts(profile?.integrations[0].token!)
+    const token = profile?.integrations?.[0]?.token || 'demo_token'
+    const parsed = await fetchRecentPosts(token)
     if (parsed) return { status: 200, data: parsed }
     console.log('🔴 Error in getting posts')
     return { status: 404 }

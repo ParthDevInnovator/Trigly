@@ -16,6 +16,7 @@ import { AppDispatch, useAppSelector } from '@/redux/store'
 import { useDispatch } from 'react-redux'
 import { TRIGGER } from '@/redux/slices/automation'
 import { useMutationData } from './use-mutation-data'
+import { useQueryClient } from '@tanstack/react-query'
 
 export const useCreateAutomation = () => {
   const { isPending, mutate } = useMutationData(
@@ -113,30 +114,43 @@ export const useTriggers = (id: string) => {
 
 export const useKeywords = (id: string) => {
   const [keyword, setKeyword] = useState('')
+  const [reply, setReply] = useState('')
+  const queryClient = useQueryClient()
+
   const onValueChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setKeyword(e.target.value)
 
+  const onReplyChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setReply(e.target.value)
+
   const { mutate } = useMutationData(
     ['add-keyword'],
-    (data: { keyword: string }) => saveKeyword(id, data.keyword),
+    (data: { keyword: string; reply?: string }) => saveKeyword(id, data.keyword, data.reply),
     'automation-info',
-    () => setKeyword('')
+    () => {
+      setKeyword('')
+      setReply('')
+      queryClient.invalidateQueries({ queryKey: ['user-automations'] })
+    }
   )
 
-  const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      mutate({ keyword })
+  const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      mutate({ keyword, reply: reply.trim() !== '' ? reply : undefined })
       setKeyword('')
+      setReply('')
     }
   }
 
   const { mutate: deleteMutation } = useMutationData(
     ['delete-keyword'],
     (data: { id: string }) => deleteKeyword(data.id),
-    'automation-info'
+    'automation-info',
+    () => queryClient.invalidateQueries({ queryKey: ['user-automations'] })
   )
 
-  return { keyword, onValueChange, onKeyPress, deleteMutation }
+  return { keyword, reply, onValueChange, onReplyChange, onKeyPress, deleteMutation }
 }
 
 export const useAutomationPosts = (id: string) => {

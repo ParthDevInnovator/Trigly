@@ -39,29 +39,93 @@ export async function sendSimulatedMessage(text: string) {
             }
         })
 
-        // Generate AI reply via Gemini
-        const aiReply = await generateSmartReply(
-            SIMULATOR_PROMPT,
-            [{ role: 'user', content: text }]
-        )
+        // ── Step 1: Check if the message matches any keyword trigger ──
+        const lowerText = text.toLowerCase()
 
-        console.log('[Simulator] AI Reply:', aiReply)
+        const allAutomations = await client.automation.findMany({
+            where: { active: true },
+            include: {
+                keywords: true,
+                listener: true,
+                posts: true,
+            },
+        })
 
-        // Save bot reply to DB
+        let replyText: string | null = null
+        let matchedAutomation: typeof allAutomations[0] | null = null
+
+        for (const automation of allAutomations) {
+            const matchedKeyword = automation.keywords.find((kw) =>
+                lowerText.includes(kw.word.toLowerCase())
+            )
+            if (matchedKeyword) {
+                matchedAutomation = automation
+
+                // Determine reply text from keyword OR listener
+                if (matchedKeyword.reply) {
+                    replyText = matchedKeyword.reply
+                } else if (automation.listener?.listener === 'MESSAGE' && automation.listener.prompt) {
+                    replyText = automation.listener.prompt
+                }
+
+                // If it's SMARTAI, we will handle it below by setting replyText to null for now
+                // but we know we matched an automation!
+                if (automation.listener?.listener === 'SMARTAI') {
+                    replyText = null
+                }
+
+                console.log(`[Simulator] ✅ Keyword "${matchedKeyword.word}" matched`)
+                break
+            }
+        }
+
+        // ── Step 2: If no static reply was found, fall back to AI ──
+        if (!replyText) {
+            try {
+                // If we matched an automation that uses SMARTAI, use its prompt as context!
+                const systemPrompt = (matchedAutomation?.listener?.listener === 'SMARTAI' && matchedAutomation.listener.prompt)
+                    ? `${SIMULATOR_PROMPT}\nAdmin instructions: ${matchedAutomation.listener.prompt}`
+                    : SIMULATOR_PROMPT
+
+                replyText = await generateSmartReply(
+                    systemPrompt,
+                    [{ role: 'user', content: text }]
+                )
+                console.log('[Simulator] 🤖 AI Reply:', replyText)
+            } catch (aiError) {
+                console.error('[Simulator] AI error, using fallback:', aiError)
+                replyText = matchedAutomation?.listener?.prompt || "Thanks for your message! Our team will get back to you shortly."
+            }
+        }
+
+        // Append attached post info if it exists (for simulation visual feedback)
+        if (matchedAutomation?.posts && matchedAutomation.posts.length > 0) {
+            replyText += `\n\n[Attached Post Media: ${matchedAutomation.posts[0].media}]`
+        }
+
+        // ── Step 3: Save bot reply to DB ──
         await client.dms.create({
             data: {
+                automationId: matchedAutomation?.id,
                 senderId: BOT_ID,
                 reciever: SENDER_ID,
-                message: aiReply,
+                message: replyText,
             }
         })
+
+        // ── Step 4: Increment analytics if keyword matched ──
+        if (matchedAutomation?.listener) {
+            await client.listener.update({
+                where: { id: matchedAutomation.listener.id },
+                data: { dmCount: { increment: 1 } },
+            })
+        }
 
         return { success: true }
     } catch (error) {
         console.error('[Simulator] Error:', error)
 
-        // Fallback so the demo always works even if API key is invalid/expired
-        const fallbackReply = "This is a simulated AI fallback reply. Please check your Gemini API key in the .env file."
+        const fallbackReply = "Thanks for your message! Our team will get back to you shortly."
         await client.dms.create({
             data: {
                 senderId: BOT_ID,

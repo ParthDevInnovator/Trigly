@@ -72,7 +72,7 @@ const Trigger = ({ id }: Props) => {
             <p className="text-sm font-light">{trigger.description}</p>
           </div>
         ))}
-        <Keywords id={id} />
+        {types && types.length > 0 && <Keywords id={id} />}
         <Button
           onClick={onSaveTrigger}
           disabled={types?.length === 0}

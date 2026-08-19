@@ -122,7 +122,7 @@ export const addTrigger = async (automationId: string, trigger: string[]) => {
   })
 }
 
-export const addKeyWord = async (automationId: string, keyword: string) => {
+export const addKeyWord = async (automationId: string, keyword: string, reply?: string) => {
   return client.automation.update({
     where: {
       id: automationId,
@@ -131,6 +131,7 @@ export const addKeyWord = async (automationId: string, keyword: string) => {
       keywords: {
         create: {
           word: keyword,
+          reply,
         },
       },
     },
